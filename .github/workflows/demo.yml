@@ -1,17 +1,32 @@
 name: Sample Workflow
-on: 
+
+on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allows manual trigger
+  workflow_run:
+    workflows: ["Sample Workflow"]  # Replace with the name of your workflow
+    types:
+      - completed
+
 jobs:
   demo:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v4.2.2
-      - name: display a success message
+      - name: Display a success message
         run: echo "Welcome to GitHub Actions!"
-      - name: display the present working directory
+      - name: Display the present working directory
         run: |
           pwd
           ls
+
+  manual_trigger:
+    needs: demo  # This ensures the manual job only runs after 'demo' is successful
+    runs-on: ubuntu-latest
+    if: success()  # Ensures this only runs if the 'demo' job is successful
+    steps:
+      - name: Triggered manually after success
+        run: echo "This job was manually triggered after the demo job succeeded."
