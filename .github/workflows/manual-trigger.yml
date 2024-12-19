@@ -1,0 +1,15 @@
+name: Manual Trigger Workflow
+
+on:
+  workflow_run:
+    workflows: ["Demo Workflow"]  # The name of the first workflow
+    types:
+      - completed
+
+jobs:
+  manual_trigger:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Ensures this job runs only if the first workflow succeeded
+    steps:
+      - name: Triggered manually after success
+        run: echo "This job was manually triggered after the demo job succeeded."
